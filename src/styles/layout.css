@@ -1,0 +1,112 @@
+.top {
+  display: flex;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 18px 0 12px;
+  border-bottom: 1px solid var(--line);
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  flex-wrap: wrap;
+}
+.brand h1 {
+  margin: 0;
+  font: 700 26px/1.1 var(--display);
+  letter-spacing: 0.02em;
+}
+.brand h1 span {
+  color: var(--t);
+}
+.brand p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.tabs button {
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font: 600 13px var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tabs button[aria-selected='true'] {
+  border-color: var(--line);
+  background: var(--panel);
+  color: var(--fg);
+}
+main {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding-top: 16px;
+}
+.lab {
+  display: grid;
+  grid-template-columns: 188px minmax(0, 1fr) 340px;
+  gap: 16px;
+  align-items: start;
+}
+.rail,
+.panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 14px;
+}
+@media (max-width: 1180px) {
+  .lab {
+    grid-template-columns: 170px minmax(0, 1fr);
+  }
+  .panel {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    align-items: start;
+  }
+}
+@media (max-width: 760px) {
+  .lab {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rail {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .rail .group {
+    flex: 1 1 160px;
+  }
+  .tiles {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+  }
+  .tile {
+    grid-template-columns: 16px auto !important;
+  }
+  .tile kbd {
+    display: none;
+  }
+  .doc {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .toc {
+    position: static !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+  }
+  .toc a {
+    border-left: 0 !important;
+    border-bottom: 2px solid var(--line);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}

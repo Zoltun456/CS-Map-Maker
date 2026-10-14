@@ -1,0 +1,384 @@
+<nav class="toc" aria-label="Guide sections">
+  <a href="#g-plan">The plan</a>
+  <a href="#g-setup">Set up Workshop Tools</a>
+  <a href="#g-scale">Scale and dimensions</a>
+  <a href="#g-blockout">Blockout in Hammer</a>
+  <a href="#g-entities">Gameplay entities</a>
+  <a href="#g-test">Playtest with bots</a>
+  <a href="#g-art">Materials and props</a>
+  <a href="#g-light">Lighting and mood</a>
+  <a href="#g-publish">Publish and play 3v3</a>
+  <a href="#g-design">3v3 design rules</a>
+</nav>
+<article class="prose">
+  <h2 id="g-plan">The plan</h2>
+  <p>
+    Most custom maps die in the art pass because the layout was never tested. Lock the layout first,
+    then make it pretty.
+  </p>
+  <ol>
+    <li>
+      <strong>Layout lab.</strong> Paint the layout here, hit the timing targets, and run a few
+      hundred simulated rounds until neither side wins much more than 55%.
+    </li>
+    <li>
+      <strong>Blockout.</strong> Use <em>Hammer blockout</em> in the lab to get floor and cover
+      coordinates, then build grey boxes in Hammer with dev textures.
+    </li>
+    <li>
+      <strong>Bot test.</strong> Walk the map, time routes with a stopwatch, and fight bots. Fix
+      anything that feels slow or unfair.
+    </li>
+    <li>
+      <strong>Friends test.</strong> Play 3v3 on the grey version. Ask what felt bad, not what
+      looked bad.
+    </li>
+    <li>
+      <strong>Art pass.</strong> Pick a theme, swap dev textures for real materials, add props that
+      keep cover readable.
+    </li>
+    <li>
+      <strong>Lighting, radar, publish.</strong> Light it, make a radar image, publish it as
+      friends-only, and play.
+    </li>
+  </ol>
+
+  <h2 id="g-setup">Set up Workshop Tools</h2>
+  <ol>
+    <li>
+      In Steam, right-click Counter-Strike 2, open <strong>Properties → DLC</strong>, and tick
+      <strong>Counter-Strike 2 Workshop Tools</strong>. It downloads a few GB of extra content.
+    </li>
+    <li>
+      Launch CS2 and choose <strong>Launch CS2 Workshop Tools</strong> from the launch dialog.
+    </li>
+    <li>
+      In the tools launcher, click <strong>Create New Addon</strong> and name it after your map, for
+      example <code>de_saltworks</code>. The addon is your project folder: maps, materials and
+      models all live in it.
+    </li>
+    <li>
+      Open the addon. The Asset Browser appears. Open <strong>Hammer</strong> from its toolbar and
+      create a new map. Save it as <code>maps/de_yourmap.vmap</code>. The <code>de_</code> prefix
+      tells the game it is a bomb defusal map.
+    </li>
+  </ol>
+  <p class="callout">
+    Hotkeys and menu names move around between Workshop Tools updates. When something here doesn't
+    match what you see, the
+    <a
+      href="https://developer.valvesoftware.com/wiki/Counter-Strike_2_Workshop_Tools"
+      target="_blank"
+      rel="noopener"
+      >Valve Developer Community CS2 pages</a
+    >
+    are the reference.
+  </p>
+
+  <h2 id="g-scale">Scale and dimensions</h2>
+  <p>
+    Hammer units are roughly an inch. The lab grid uses 64-unit cells, so one cell is about the size
+    of a standard crate.
+  </p>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Thing</th>
+          <th>Size in Hammer units</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Player</td>
+          <td>32 wide, 72 tall (54 crouched)</td>
+          <td>Eye height is about 64 standing.</td>
+        </tr>
+        <tr>
+          <td>Run speed</td>
+          <td>Knife 250, AK-47 215, M4 225, AWP 200</td>
+          <td>The lab uses 220 for every timing.</td>
+        </tr>
+        <tr>
+          <td>Step</td>
+          <td>Up to 18</td>
+          <td>Walked over without jumping. Stairs use 8 to 16 per step.</td>
+        </tr>
+        <tr>
+          <td>Jump</td>
+          <td>About 55 standing, about 64 crouch-jump</td>
+          <td>Make jump-boxes 64 tall and check them in-game.</td>
+        </tr>
+        <tr>
+          <td>Doorway</td>
+          <td>96 to 128 wide, 128 tall</td>
+          <td>One player wide feels like a real choke.</td>
+        </tr>
+        <tr>
+          <td>Corridor</td>
+          <td>192 to 320 wide</td>
+          <td>Three to five lab cells.</td>
+        </tr>
+        <tr>
+          <td>Bombsite</td>
+          <td>About 512 × 384 to 768 × 640</td>
+          <td>Eight by six lab cells is a good 3v3 site.</td>
+        </tr>
+        <tr>
+          <td>Cover box</td>
+          <td>64 or 48 tall</td>
+          <td>48 hides a crouching player; 64 hides more but can be jumped.</td>
+        </tr>
+        <tr>
+          <td>Walls</td>
+          <td>256 to 384 tall</td>
+          <td>Taller than anyone can boost over.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="g-blockout">Blockout in Hammer</h2>
+  <p>
+    Hammer in Source 2 builds with editable meshes instead of the old brushes. You draw a box, then
+    pull its faces, cut it, and extrude it.
+  </p>
+  <ul>
+    <li>
+      <strong>Block tool</strong> (<kbd>Shift</kbd>+<kbd>B</kbd>) draws boxes. Set the grid to 16 or
+      32 with <kbd>[</kbd> and <kbd>]</kbd> and keep every wall on that grid.
+    </li>
+    <li>
+      <strong>Selection modes</strong> are on <kbd>1</kbd> to <kbd>4</kbd>: vertices, edges, faces,
+      whole meshes. Select a face and drag with <kbd>Shift</kbd> held to extrude it.
+    </li>
+    <li>
+      Build the floor from the lab's floor rectangles first, then put walls on their edges, then
+      cover boxes. Use the coordinates from <em>Hammer blockout</em>: the map is centred on 0,0 and
+      north is +Y.
+    </li>
+    <li>
+      Use dev materials (search <code>dev</code> in the Material Browser) so measurement grids stay
+      visible. Give each team's side a different dev colour so testers can tell where they are.
+    </li>
+    <li>
+      Close off the outside of the map with walls and a ceiling or skybox. Nothing should look into
+      the void.
+    </li>
+  </ul>
+
+  <h2 id="g-entities">Gameplay entities</h2>
+  <p>
+    These are the pieces that make it a playable bomb map. Place point entities with the Entity tool
+    (<kbd>Shift</kbd>+<kbd>E</kbd>). Area entities are a mesh tied to an entity: draw a box, give it
+    the <code>toolstrigger</code> material, select it, and use
+    <strong>Tie to Entity</strong> (<kbd>Ctrl</kbd>+<kbd>T</kbd>).
+  </p>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Entity</th>
+          <th>What it does</th>
+          <th>For 3v3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>info_player_terrorist</code></td>
+          <td>T spawn point</td>
+          <td>Place 5 so a 3v3 always has spares. Keep them 64u apart.</td>
+        </tr>
+        <tr>
+          <td><code>info_player_counterterrorist</code></td>
+          <td>CT spawn point</td>
+          <td>Same: 5, spaced out.</td>
+        </tr>
+        <tr>
+          <td><code>func_bomb_target</code></td>
+          <td>Area where the bomb can be planted</td>
+          <td>One per site. The lab's site rectangles are the extents.</td>
+        </tr>
+        <tr>
+          <td><code>func_buyzone</code></td>
+          <td>Area where players can buy</td>
+          <td>One over each spawn. Set its team.</td>
+        </tr>
+        <tr>
+          <td><code>env_sky</code>, <code>light_environment</code></td>
+          <td>Sky and sun</td>
+          <td>See lighting.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    When you build the map (<kbd>F9</kbd>), make sure the navigation mesh is included in the build
+    options, or bots will stand still.
+  </p>
+
+  <h2 id="g-test">Playtest with bots</h2>
+  <p>
+    Load the map from the console with the competitive game mode. Wingman mode caps teams at two
+    players, so 3v3 runs in competitive with a few settings changed.
+  </p>
+  <div class="cfgbox">
+    <pre class="cfg" id="cfg-bots">
+game_type 0; game_mode 1; map de_yourmap
+sv_cheats 1
+mp_warmup_end
+bot_kick
+bot_add_t
+bot_add_t
+bot_add_ct
+bot_add_ct
+mp_roundtime_defuse 60
+mp_buy_anywhere 1
+mp_restartgame 1</pre>
+    <button class="btn copy" data-copy="cfg-bots">Copy</button>
+  </div>
+  <ul>
+    <li>
+      <code>noclip</code> flies through walls; <code>cl_showpos 1</code> shows your coordinates so
+      you can match them with the lab.
+    </li>
+    <li>
+      <code>bot_stop 1</code> freezes bots, which is useful for checking what each angle can see.
+    </li>
+    <li>
+      Time every route with a stopwatch at full run. If a real time is more than a couple of seconds
+      off the lab's number, your Hammer geometry has drifted from the plan.
+    </li>
+  </ul>
+
+  <h2 id="g-art">Materials and props</h2>
+  <h3>Stock content first</h3>
+  <p>
+    CS2 ships with every material and prop from its official maps. In the Asset Browser, filter by
+    <code>materials</code> or <code>models/props</code> and type a theme word like
+    <code>dust</code>, <code>italy</code>, <code>ancient</code> or <code>anubis</code>. Drag props
+    straight into Hammer. A themed map built only from stock content still looks professional.
+  </p>
+  <h3>Custom textures</h3>
+  <ul>
+    <li>
+      Free CC0 texture sets:
+      <a href="https://polyhaven.com/textures" target="_blank" rel="noopener">Poly Haven</a>
+      and <a href="https://ambientcg.com" target="_blank" rel="noopener">ambientCG</a>. Download the
+      colour, normal, roughness and ambient occlusion maps.
+    </li>
+    <li>
+      Put the image files in your addon's <code>content/materials/</code> folder, open the Material
+      Editor, create a material with a CS2 environment shader, and plug each map into its slot.
+    </li>
+    <li>
+      Keep texel density close to the stock maps so your walls don't look blurry next to Valve's
+      props.
+    </li>
+  </ul>
+  <h3>Custom models</h3>
+  <p>
+    Model in Blender, export FBX, and import with ModelDoc. Give anything players touch a simple
+    physics hull. For most cover, a stock crate or a mesh built in Hammer is faster and plays
+    better.
+  </p>
+  <h3>Keep it readable</h3>
+  <ul>
+    <li>
+      Busy textures at head height hide player models. Keep the band from 0 to 80 units calm and
+      mid-toned.
+    </li>
+    <li>
+      Any prop that looks like cover must act like cover. Give clutter clear collision or none.
+    </li>
+    <li>
+      Mark sites with big painted letters and a recognisable landmark so callouts come naturally.
+    </li>
+  </ul>
+
+  <h2 id="g-light">Lighting and mood</h2>
+  <ul>
+    <li>
+      <code>env_sky</code> with a sky material, plus <code>light_environment</code> for the sun.
+      Match the sun angle to the sky.
+    </li>
+    <li>
+      Cover the playable space with an <code>env_combined_light_probe_volume</code> so players and
+      props pick up the bounce light.
+    </li>
+    <li>
+      Add fog and colour grading last, through a post-processing volume. Never let fog shorten a
+      sightline you designed.
+    </li>
+    <li>
+      Avoid hard dark corners where a player blends in. Both teams should see each other equally at
+      every common angle.
+    </li>
+  </ul>
+
+  <h2 id="g-publish">Publish and play 3v3</h2>
+  <ol>
+    <li>
+      Make a radar image. The lab's <em>Top-down image</em> is a starting point; the game reads the
+      radar from an overview file in <code>resource/overviews/</code> plus an image, and the VDC
+      wiki has the current format.
+    </li>
+    <li>
+      Publish from the Workshop Tools publishing tool. Add a preview image and set visibility to
+      <strong>Friends only</strong> or hidden, so only people with the link can find it.
+    </li>
+    <li>
+      Each friend subscribes on the Workshop page. The lobby host starts it from
+      <strong>Play → Workshop Maps</strong> with the party together.
+    </li>
+    <li>Once in, the host pastes these settings for a short 3v3 match:</li>
+  </ol>
+  <div class="cfgbox">
+    <pre class="cfg" id="cfg-match">
+mp_roundtime_defuse 1.5
+mp_c4timer 40
+mp_freezetime 10
+mp_buytime 20
+mp_maxrounds 16
+mp_startmoney 800
+mp_limitteams 0
+mp_autoteambalance 0
+bot_kick
+mp_warmup_end
+mp_restartgame 1</pre>
+    <button class="btn copy" data-copy="cfg-match">Copy</button>
+  </div>
+
+  <h2 id="g-design">3v3 design rules</h2>
+  <ul>
+    <li>
+      <strong>Two sites only if rotations are short.</strong> With three CTs, one site is often held
+      by a single player. A CT rotation over about 14 seconds means that player always dies alone.
+    </li>
+    <li>
+      <strong>Two entrances per site.</strong> Three entrances are too many for three defenders to
+      watch.
+    </li>
+    <li>
+      <strong>CTs set up first.</strong> CTs should reach each site 5 to 10 seconds before the Ts.
+      Check it in the timing table.
+    </li>
+    <li>
+      <strong>First contact around 6 to 12 seconds.</strong> Earlier feels like a spawn fight; later
+      feels empty.
+    </li>
+    <li>
+      <strong>Break long sightlines.</strong> Anything over about 3000 units turns into an AWP lane.
+      Add a doorway, a bend, or a box.
+    </li>
+    <li>
+      <strong>No spawn peeks.</strong> Neither spawn should see the other. The lab warns you when
+      they can.
+    </li>
+    <li>
+      <strong>Small is fine.</strong> A good 3v3 map is roughly 3000 to 3600 units across. Bigger
+      maps feel empty with six players.
+    </li>
+  </ul>
+</article>

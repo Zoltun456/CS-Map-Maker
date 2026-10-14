@@ -1,0 +1,146 @@
+.doc {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.toc {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+.toc a {
+  padding: 3px 8px;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+}
+.toc a:hover {
+  border-left-color: var(--t);
+  color: var(--fg);
+}
+.prose {
+  max-width: 74ch;
+}
+.prose h2 {
+  margin: 36px 0 8px;
+  font: 700 22px var(--display);
+  scroll-margin-top: 16px;
+}
+.prose h2:first-child {
+  margin-top: 0;
+}
+.prose h3 {
+  margin: 20px 0 4px;
+  font: 600 16px var(--display);
+}
+.prose p,
+.prose li {
+  color: #c9d3d5;
+}
+.prose li {
+  margin: 3px 0;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.prose th {
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font: 600 12px var(--display);
+  text-align: left;
+  text-transform: uppercase;
+}
+.prose td {
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.tablewrap {
+  margin: 10px 0;
+  overflow-x: auto;
+}
+.callout {
+  padding: 10px 14px;
+  border-left: 3px solid var(--ct);
+  border-radius: 0 6px 6px 0;
+  background: var(--panel);
+}
+.cfgbox {
+  position: relative;
+  margin: 10px 0;
+}
+.cfg {
+  padding: 12px 14px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0a0e0f;
+  font: 13px/1.6 var(--mono);
+}
+.cfgbox .btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.intro {
+  max-width: 74ch;
+  margin: 0 0 18px;
+  color: #c9d3d5;
+}
+.themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  gap: 16px;
+}
+.theme {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.theme .sw {
+  display: flex;
+  height: 54px;
+}
+.theme .sw span {
+  flex: 1;
+}
+.theme .body {
+  display: flex;
+  padding: 14px 16px 16px;
+  flex-direction: column;
+  gap: 8px;
+}
+.theme h3 {
+  margin: 0;
+  font: 700 19px var(--display);
+}
+.theme .pitch {
+  margin: 0;
+  color: #c9d3d5;
+}
+.theme dl {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 4px 10px;
+  margin: 0;
+  font-size: 13.5px;
+}
+.theme dt {
+  padding-top: 2px;
+  color: var(--muted);
+  font: 11px var(--display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.theme dd {
+  margin: 0;
+  color: #c9d3d5;
+}

@@ -1,0 +1,370 @@
+<nav class="toc" aria-label="Permafrost sections">
+  <a href="#p-concept">Concept</a>
+  <a href="#p-zones">Zones and callouts</a>
+  <a href="#p-look">Look and materials</a>
+  <a href="#p-light">Lighting and doorways</a>
+  <a href="#p-sound">Sound</a>
+  <a href="#p-traps">Traps</a>
+  <a href="#p-build">Building the traps</a>
+</nav>
+<article class="prose">
+  <h2 id="p-concept">Permafrost</h2>
+  <p>
+    Working name <code>de_permafrost</code>. A remote Arctic research station. The outside is a
+    frozen supply yard behind a perimeter fence. The inside is a sealed weapons research wing: clean
+    labs, containment doors and decontamination airlocks. The agents and the program are fictional,
+    so the signage can use made-up codenames like <em>Compound K-7</em>.
+  </p>
+  <p>
+    Ts come in across the ice. CTs are station security and spawn inside. Site A is the outdoor
+    cargo pad where sealed containers wait for airlift. Site B is the containment lab at the heart
+    of the building.
+  </p>
+  <div class="btnrow" style="margin: 12px 0">
+    <button class="btn primary" data-load="permafrost">Load the Permafrost layout</button>
+  </div>
+  <p class="note">
+    It uses the sample's routes, so the timings and balance carry over. Blue-grey floor is indoors.
+    In the simulator it comes out close to even.
+  </p>
+
+  <h2 id="p-zones">Zones and callouts</h2>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Callout</th>
+          <th>Where</th>
+          <th>Set dressing</th>
+          <th>Play note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Snowcat drop</td>
+          <td>T spawn, outside</td>
+          <td>Tracked snow vehicles, flare stands, fuel drums, tyre ruts in the snow.</td>
+          <td>Vehicles block any view toward the building.</td>
+        </tr>
+        <tr>
+          <td>Fence</td>
+          <td>A long, outside</td>
+          <td>Chain-link perimeter fence, floodlight towers, snowdrifts.</td>
+          <td>Drifts are waist-high cover. The long doors become a gate in the fence.</td>
+        </tr>
+        <tr>
+          <td>Cargo pad</td>
+          <td>Site A, outside</td>
+          <td>Helipad markings, sealed containers with hazard stencils, a crane or snowcat.</td>
+          <td>Containers are the site's cover. Paint a huge A on the pad.</td>
+        </tr>
+        <tr>
+          <td>Boiler house</td>
+          <td>A short, inside</td>
+          <td>Boilers, steam pipes (static, no vapour), metal stairs.</td>
+          <td>The only indoor route on the T side. Grated floors are loud.</td>
+        </tr>
+        <tr>
+          <td>Courtyard</td>
+          <td>Mid, outside</td>
+          <td>Radio mast, satellite dish, frozen generator.</td>
+          <td>Main contact point. The dish is good cover for a mid fight.</td>
+        </tr>
+        <tr>
+          <td>Main corridor</td>
+          <td>Mid to CT, inside</td>
+          <td>Observation windows into the labs, notice boards, ID turnstiles.</td>
+          <td>Keep windows as solid glass so they don't add sightlines.</td>
+        </tr>
+        <tr>
+          <td>Security lobby</td>
+          <td>CT spawn, inside</td>
+          <td>Reception desk, monitors, weapons lockers.</td>
+          <td>Buy zone.</td>
+        </tr>
+        <tr>
+          <td>Containment</td>
+          <td>Site B, inside</td>
+          <td>Glass fume hoods, sample freezers, steel benches, a vault-style containment door.</td>
+          <td>Benches are the cover. The vault door frames the CT entry.</td>
+        </tr>
+        <tr>
+          <td>Decon</td>
+          <td>Mid to B, inside</td>
+          <td>Double doors, yellow and black floor stripes, shower heads, PPE lockers.</td>
+          <td>Narrow by design. Home of the blast-door trap.</td>
+        </tr>
+        <tr>
+          <td>Service tunnels</td>
+          <td>B tunnels, inside</td>
+          <td>Pipe runs, heating ducts, hazard tape, caged lamps.</td>
+          <td>Long and dim. Home of the alarm trap.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="p-look">Look and materials</h2>
+  <div
+    class="themes"
+    style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); margin: 12px 0"
+  >
+    <article class="theme">
+      <div class="sw">
+        <span style="background: #f2f5f7"></span><span style="background: #b9cad6"></span
+        ><span style="background: #5b7488"></span><span style="background: #26332c"></span
+        ><span style="background: #e2672f"></span>
+      </div>
+      <div class="body">
+        <h3>Outside</h3>
+        <p class="pitch">
+          Packed snow, ice-blue shadow, dark spruce and concrete, safety orange on anything people
+          touch.
+        </p>
+      </div>
+    </article>
+    <article class="theme">
+      <div class="sw">
+        <span style="background: #e9ece8"></span><span style="background: #a9c2b1"></span
+        ><span style="background: #9aa3a8"></span><span style="background: #e5c22d"></span
+        ><span style="background: #c3322b"></span>
+      </div>
+      <div class="body">
+        <h3>Inside</h3>
+        <p class="pitch">
+          White tile, pale institutional green, stainless steel, hazard yellow, and red only on
+          alarms and lockdown lights.
+        </p>
+      </div>
+    </article>
+  </div>
+  <h3>Stock content to search for</h3>
+  <ul>
+    <li>
+      <strong>Office</strong> has snowy exteriors, snow-covered props and office interiors for the
+      lobby and corridor.
+    </li>
+    <li>
+      <strong>Nuke</strong> has industrial interiors, lockers, catwalks, hazard signs and pipework
+      for the tunnels, decon and boiler house.
+    </li>
+    <li>
+      <strong>Vertigo</strong> and <strong>Train</strong> add scaffolding, cranes, fences and heavy
+      industrial pieces for the cargo pad.
+    </li>
+    <li>
+      In the Asset Browser, try the words <code>snow</code>, <code>hazard</code>,
+      <code>locker</code>, <code>pipe</code>, <code>lab</code>, <code>fence</code> and
+      <code>crate</code>. Exact asset names change, so search rather than relying on a list.
+    </li>
+  </ul>
+  <h3>Make these yourself</h3>
+  <ul>
+    <li>
+      <strong>Decals:</strong> the station logo, hazard stencils, room numbers and the big A and B.
+      A decal is one image with transparency, so it's the easiest custom asset to make.
+    </li>
+    <li>
+      <strong>Snow blend:</strong> a material that blends snow over concrete or asphalt, so paths
+      look trodden and edges look drifted. Poly Haven and ambientCG both have CC0 snow sets.
+    </li>
+    <li>
+      <strong>Lab signage:</strong> fictional compound codes, evacuation maps and warning posters.
+      They tell the story without any real chemistry.
+    </li>
+  </ul>
+
+  <h2 id="p-light">Lighting and doorways</h2>
+  <ul>
+    <li>
+      <strong>Outside:</strong> overcast, low sun, soft shadows, cold blue sky light. Light snowfall
+      is fine for mood, but keep it thin and never across a long sightline.
+    </li>
+    <li>
+      <strong>Inside:</strong> cool fluorescent panels in the labs and corridors, warmer sodium
+      lamps in the tunnels and boiler house.
+    </li>
+    <li>
+      <strong>Doorways need care.</strong> The camera adjusts its exposure as you move between
+      bright snow and a dim interior. Whoever holds the doorway from inside gets a moment where the
+      attacker sees badly. Keep the first few metres inside bright, use a lit vestibule at each
+      entrance, and limit how far auto-exposure can swing in a post-processing volume.
+    </li>
+    <li>
+      <strong>Snow glare:</strong> pure white snow behind a player at eye level makes them a dark
+      silhouette, which is fair to both teams. Glare reflections are not, so keep snow matte.
+    </li>
+  </ul>
+
+  <h2 id="p-sound">Sound</h2>
+  <ul>
+    <li>
+      Wind outside, ventilation hum inside, quiet electrical buzz in the labs. Set these with
+      soundscapes so they change as you walk through a door.
+    </li>
+    <li>
+      Footsteps are information in CS. Give snow, metal grating, lab tile and concrete different
+      surface sounds so players can hear where someone is. Grating in the boiler house and decon
+      makes rushing those routes loud on purpose.
+    </li>
+  </ul>
+
+  <h2 id="p-traps">Traps</h2>
+  <p>
+    You're right to be wary. Traps in CS tend to go wrong in a few predictable ways, so each idea
+    below is built to avoid them. None of them use gas, smoke or vapour.
+  </p>
+  <h3>How traps get abused</h3>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Problem</th>
+          <th>Safeguard</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Spamming the button</td>
+          <td>Once per round. The button locks after use and resets at round start.</td>
+        </tr>
+        <tr>
+          <td>Triggering it by shooting from across the map</td>
+          <td>Press-to-use only, at close range, never on damage.</td>
+        </tr>
+        <tr>
+          <td>Killing or blocking your own team</td>
+          <td>No damage traps, or damage filtered to one team.</td>
+        </tr>
+        <tr>
+          <td>Stalling the clock</td>
+          <td>
+            CTs win on time, so any door that delays Ts is strong. Keep closures short (about 8
+            seconds) and let either team use them.
+          </td>
+        </tr>
+        <tr>
+          <td>Locking the bomb or the defuse</td>
+          <td>No trap can touch a bombsite, block the bomb, or stop a defuse.</td>
+        </tr>
+        <tr>
+          <td>Traps at round start</td>
+          <td>Disabled for the first 20 seconds, so nobody uses them on a rush or at spawn.</td>
+        </tr>
+        <tr>
+          <td>Surprise deaths</td>
+          <td>
+            Every trap gives a 2 second warning with a klaxon and flashing lights before it acts.
+          </td>
+        </tr>
+        <tr>
+          <td>A trap state carrying into the next round</td>
+          <td>Everything resets at round start. Test this, because it's the most common bug.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Ideas</h3>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Trap</th>
+          <th>What it does</th>
+          <th>Risk</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Decon blast door</td>
+          <td>
+            A wall panel in decon seals the airlock for 8 seconds after a 2 second klaxon, then it
+            reopens. Either team can press it, once per round. It cuts a rotation or splits an
+            attack, and the person pressing it is exposed while they do it.
+          </td>
+          <td>Medium</td>
+          <td><span class="chip ok">Build first</span></td>
+        </tr>
+        <tr>
+          <td>Tunnel alarm</td>
+          <td>
+            A laser tripwire in the service tunnels. When a T crosses it, red lights and an alarm
+            play for 5 seconds, telling CTs someone is coming. Ts can shoot the emitter to disarm it
+            for the round.
+          </td>
+          <td>Low</td>
+          <td><span class="chip ok">Build first</span></td>
+        </tr>
+        <tr>
+          <td>Breakable ice window</td>
+          <td>
+            A frosted window on the fence route that can be shot out, opening a new angle onto the
+            cargo pad. Repaired each round.
+          </td>
+          <td>Low</td>
+          <td><span class="chip ok">Good extra</span></td>
+        </tr>
+        <tr>
+          <td>Electrified grate</td>
+          <td>
+            A panel in the boiler house powers a floor grate for 3 seconds, doing light damage with
+            sparks as a warning. Damage only to the other team.
+          </td>
+          <td>High</td>
+          <td><span class="chip hi">Only after testing</span></td>
+        </tr>
+        <tr>
+          <td>Power cut, floodlight blind</td>
+          <td>Turning off lights or blinding a choke point.</td>
+          <td>High</td>
+          <td><span class="chip hi">Skip</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="callout">
+    Playtest Permafrost without traps first, then publish a second version,
+    <code>de_permafrost_traps</code>, so you can compare. The simulator doesn't model traps, so
+    those tests have to be with friends.
+  </p>
+
+  <h2 id="p-build">Building the traps</h2>
+  <p>
+    Each trap is a few logic entities wired together with outputs. These entities come from CS:GO
+    and most work the same in CS2 Hammer, but check names and options on the VDC wiki as you go.
+  </p>
+  <h3>Decon blast door</h3>
+  <ul>
+    <li>
+      The door is a mesh tied to <code>func_door</code>. Set it to stop or reverse when blocked and
+      do no crush damage, so nobody dies under it.
+    </li>
+    <li>
+      The panel is a <code>func_button</code> set to press-to-use only, not damage-activated, and to
+      stay pressed so it can't be used again.
+    </li>
+    <li>
+      Pressing it fires a <code>logic_relay</code>: start the klaxon and lights, close the door
+      after 2 seconds, open it again 8 seconds later.
+    </li>
+    <li>
+      For the 20 second delay, start the button locked and unlock it with a timed output when the
+      round begins.
+    </li>
+  </ul>
+  <h3>Tunnel alarm</h3>
+  <ul>
+    <li>
+      A thin <code>trigger_multiple</code> across the tunnel with a
+      <code>filter_activator_team</code> set to Terrorists.
+    </li>
+    <li>
+      It fires a relay that turns the red lights on, plays the alarm, and turns them off after 5
+      seconds.
+    </li>
+    <li>
+      The emitter is a small <code>func_breakable</code>. When it breaks, it disables the trigger.
+    </li>
+  </ul>
+</article>
