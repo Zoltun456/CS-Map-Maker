@@ -10,6 +10,7 @@ import { TimingsPanel } from './features/simulation/TimingsPanel';
 import { GuidePage } from './content/GuidePage';
 import { PermafrostPage } from './content/PermafrostPage';
 import { ThemesPage } from './content/ThemesPage';
+import { AgentToolsPage } from './features/agent/AgentToolsPage';
 
 function AppContents() {
   const app = useApp();
@@ -63,6 +64,14 @@ function AppContents() {
             <SimulationPanel />
             <ExportPanel />
           </div>
+        </section>
+        <section
+          id="panel-agent"
+          role="tabpanel"
+          aria-labelledby="tab-agent"
+          hidden={app.tab !== 'agent'}
+        >
+          <AgentToolsPage />
         </section>
         <section
           id="panel-guide"

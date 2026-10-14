@@ -44,3 +44,26 @@ test('keyboard editing and modal focus are accessible', async ({ page }) => {
   await expect(dialog).toBeHidden();
   await expect(page.getByRole('button', { name: 'Hammer blockout' })).toBeFocused();
 });
+
+test('agent workflow evaluates, exports, and links diagnostics to the editor', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('tab', { name: 'Agent tools' }).click();
+  await expect(page.getByLabel('Agent map JSON')).toContainText('"format": "cs-map-maker"');
+  await page.getByLabel('Profile').selectOption('one-site-3v3');
+  await page.reload();
+  await expect(page.getByLabel('Profile')).toHaveValue('one-site-3v3');
+  await page.getByLabel('Simulation rounds').selectOption('200');
+  await page.getByRole('button', { name: 'Evaluate map' }).click();
+  await expect(page.locator('.agent-score')).toBeVisible({ timeout: 15000 });
+
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Report', exact: true }).click();
+  expect((await download).suggestedFilename()).toBe('report.json');
+
+  await page.locator('.diagnostic').first().click();
+  await expect(page.getByRole('tab', { name: 'Layout lab' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.locator('#map')).toBeVisible();
+});

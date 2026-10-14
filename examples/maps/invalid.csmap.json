@@ -1,0 +1,9 @@
+{
+  "format": "cs-map-maker",
+  "version": 1,
+  "name": "Invalid fixture",
+  "profile": "two-site-3v3",
+  "width": 7,
+  "height": 4,
+  "rows": ["#######", "#T..A.#", "#..C..#", "#######"]
+}

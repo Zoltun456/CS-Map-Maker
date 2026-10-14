@@ -52,7 +52,7 @@ export function SimulationPanel() {
     } finally {
       if (generation === runGeneration.current) {
         setProgress(null);
-        app.registerBatch(null);
+        app.releaseBatch(controller);
       }
     }
   };

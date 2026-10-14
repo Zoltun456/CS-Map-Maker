@@ -1,4 +1,4 @@
-import { HAMMER_UNITS_PER_CELL } from './map';
+import { HAMMER_UNITS_PER_CELL, selectSeparatedCells } from './map';
 import { tileDefinition } from './tiles';
 import { TileType, type MapDocument, type MapGraph } from './types';
 
@@ -53,20 +53,7 @@ function hammerRectangle(map: MapDocument, rectangle: [number, number, number, n
 export function createHammerBlockout(map: MapDocument, graph: MapGraph): string {
   const point = (cell: number) =>
     `${((cell % map.width) + 0.5 - map.width / 2) * 64} ${(map.height / 2 - Math.floor(cell / map.width) - 0.5) * 64} 16`;
-  const spread = (cells: readonly number[]) =>
-    cells
-      .filter((cell, index, all) =>
-        all
-          .slice(0, index)
-          .every(
-            (other) =>
-              Math.hypot(
-                (cell % map.width) - (other % map.width),
-                Math.floor(cell / map.width) - Math.floor(other / map.width),
-              ) >= 1.5,
-          ),
-      )
-      .slice(0, 5);
+  const spread = (cells: readonly number[]) => selectSeparatedCells(cells, map.width, 5);
   const rows = (rectangles: Array<[number, number, number, number]>, prefix: string) =>
     rectangles
       .map((rectangle, index) => `  ${prefix}${index + 1}: ${hammerRectangle(map, rectangle)}`)

@@ -1,4 +1,4 @@
-import { HAMMER_UNITS_PER_CELL } from './map';
+import { HAMMER_UNITS_PER_CELL, selectSeparatedCells } from './map';
 import { hasLineOfSight, secondsForDistance } from './graph';
 import type { AnalysisResult, MapGraph } from './types';
 
@@ -52,8 +52,10 @@ export function analyzeMap(graph: MapGraph): AnalysisResult {
     longestSightline: sightlines.length ? sightlines[0].distance * HAMMER_UNITS_PER_CELL : 0,
     warnings: [],
   };
-  if (graph.tSpawn.length < 3) result.warnings.push('Paint at least 3 T spawn cells.');
-  if (graph.ctSpawn.length < 3) result.warnings.push('Paint at least 3 CT spawn cells.');
+  if (selectSeparatedCells(graph.tSpawn, graph.width).length < 3)
+    result.warnings.push('Paint room for 3 separated T spawns.');
+  if (selectSeparatedCells(graph.ctSpawn, graph.width).length < 3)
+    result.warnings.push('Paint room for 3 separated CT spawns.');
   if (!graph.siteA.length) result.warnings.push('Paint a bombsite A.');
   if (graph.siteA.length && !Number.isFinite(result.tA))
     result.warnings.push('Ts cannot walk to site A.');
@@ -61,6 +63,8 @@ export function analyzeMap(graph: MapGraph): AnalysisResult {
     result.warnings.push('Ts cannot walk to site B.');
   if (graph.siteA.length && !Number.isFinite(result.ctA))
     result.warnings.push('CTs cannot walk to site A.');
+  if (graph.siteB.length && !Number.isFinite(result.ctB))
+    result.warnings.push('CTs cannot walk to site B.');
   if (graph.tSpawn.some((a) => graph.ctSpawn.some((b) => hasLineOfSight(graph, a, b))))
     result.warnings.push('T and CT spawns can see each other. Block that line.');
   return result;

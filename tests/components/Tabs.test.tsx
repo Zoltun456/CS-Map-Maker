@@ -8,10 +8,10 @@ describe('application tabs', () => {
     const lab = screen.getByRole('tab', { name: 'Layout lab' });
     lab.focus();
     fireEvent.keyDown(lab, { key: 'ArrowRight' });
-    expect(screen.getByRole('tab', { name: 'Build guide' })).toHaveAttribute(
+    expect(screen.getByRole('tab', { name: 'Agent tools' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
-    expect(screen.getByRole('tabpanel', { name: 'Build guide' })).toBeVisible();
+    expect(screen.getByRole('tabpanel', { name: 'Agent tools' })).toBeVisible();
   });
 });

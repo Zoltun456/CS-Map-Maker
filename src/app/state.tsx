@@ -21,11 +21,19 @@ import type {
   SimulationState,
   TileType,
 } from '../core/types';
+import type { MapProfileId, QualityTargets } from '../core/agentTypes';
 
 const STORAGE_LAYOUT = 'cs3v3-layout';
 const STORAGE_TAB = 'cs3v3-tab';
-export type AppTab = 'lab' | 'guide' | 'themes' | 'permafrost';
+const STORAGE_AGENT_META = 'cs3v3-agent-meta';
+export type AppTab = 'lab' | 'agent' | 'guide' | 'themes' | 'permafrost';
 export type Overlay = 'plain' | 'race' | 'sight' | 'deaths';
+export interface AgentMetadata {
+  name: string;
+  notes?: string;
+  profile: MapProfileId;
+  targets?: Partial<QualityTargets>;
+}
 
 interface HistoryState {
   map: MapDocument;
@@ -92,9 +100,14 @@ interface AppContextValue {
   canUndo: boolean;
   canRedo: boolean;
   cancelSimulation(message?: string): void;
-  registerBatch(controller: AbortController | null): void;
+  registerBatch(controller: AbortController): void;
+  releaseBatch(controller: AbortController): void;
   toast: string;
   showToast(message: string): void;
+  agentMetadata: AgentMetadata;
+  setAgentMetadata(value: AgentMetadata): void;
+  highlightedCells: number[];
+  setHighlightedCells(value: number[]): void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -107,8 +120,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }));
   const [tab, setTabState] = useState<AppTab>(() => {
     const saved = localStorage.getItem(STORAGE_TAB);
-    return saved === 'guide' || saved === 'themes' || saved === 'permafrost' ? saved : 'lab';
+    return saved === 'agent' || saved === 'guide' || saved === 'themes' || saved === 'permafrost'
+      ? saved
+      : 'lab';
   });
+  const [agentMetadata, setAgentMetadata] = useState<AgentMetadata>(() => {
+    try {
+      const value = JSON.parse(
+        localStorage.getItem(STORAGE_AGENT_META) ?? 'null',
+      ) as AgentMetadata | null;
+      if (value && (value.profile === 'two-site-3v3' || value.profile === 'one-site-3v3'))
+        return value;
+    } catch {
+      /* use defaults */
+    }
+    return { name: 'Untitled map', profile: 'two-site-3v3' };
+  });
+  const [highlightedCells, setHighlightedCells] = useState<number[]>([]);
   const [overlay, setOverlay] = useState<Overlay>('race');
   const [tool, setTool] = useState<TileType>(1);
   const [brushSize, setBrushSize] = useState(1);
@@ -127,6 +155,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_TAB, tab);
   }, [tab]);
+  useEffect(() => {
+    localStorage.setItem(STORAGE_AGENT_META, JSON.stringify(agentMetadata));
+  }, [agentMetadata]);
   const showToast = (message: string) => {
     setToast(message);
     window.clearTimeout(toastTimer.current);
@@ -189,10 +220,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     canRedo: Boolean(history.redo.length),
     cancelSimulation,
     registerBatch: (controller) => {
+      batchController.current?.abort();
       batchController.current = controller;
+    },
+    releaseBatch: (controller) => {
+      if (batchController.current === controller) batchController.current = null;
     },
     toast,
     showToast,
+    agentMetadata,
+    setAgentMetadata,
+    highlightedCells,
+    setHighlightedCells,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

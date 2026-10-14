@@ -13,13 +13,21 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build"
+    "map": "tsx src/cli/index.ts",
+    "map:validate": "tsx src/cli/index.ts validate",
+    "map:analyze": "tsx src/cli/index.ts analyze",
+    "map:simulate": "tsx src/cli/index.ts simulate",
+    "map:evaluate": "tsx src/cli/index.ts evaluate",
+    "map:render": "tsx src/cli/index.ts render",
+    "map:compare": "tsx src/cli/index.ts compare",
+    "test:cli": "tsx src/cli/index.ts validate examples/maps/two-site.csmap.json --json",
+    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run test:cli && npm run build"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "vite": "latest"
   },
   "devDependencies": {
     "@eslint/js": "latest",
@@ -35,6 +43,7 @@
     "globals": "latest",
     "jsdom": "latest",
     "prettier": "latest",
+    "tsx": "^4.23.15",
     "typescript": "latest",
     "typescript-eslint": "latest",
     "vitest": "latest"

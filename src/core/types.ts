@@ -165,6 +165,9 @@ export interface BatchStatistics {
   firstKillTime: number;
   firstKills: number;
   totalLength: number;
+  postPlantRounds: number;
+  retakes: number;
+  roundLengthBuckets: Record<'0-30' | '30-60' | '60-90' | '90+', number>;
 }
 
 export interface BatchRunRequest {

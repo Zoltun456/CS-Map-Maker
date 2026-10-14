@@ -82,6 +82,7 @@ export function MapCanvas() {
           ? rectangle(gesture.current.start, gesture.current.last, app.map.width)
           : undefined,
       brushSize: app.brushSize,
+      highlightedCells: app.highlightedCells,
     });
   }, [app, cellSize, hover, keyboardCell, focused, sightOrigin]);
 

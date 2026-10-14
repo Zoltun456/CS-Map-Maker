@@ -509,6 +509,9 @@ export function runBatch(
     firstKillTime: 0,
     firstKills: 0,
     totalLength: 0,
+    postPlantRounds: 0,
+    retakes: 0,
+    roundLengthBuckets: { '0-30': 0, '30-60': 0, '60-90': 0, '90+': 0 },
   };
   for (let round = 0; round < rounds; round += 1) {
     const state = createRound(graph, options);
@@ -519,6 +522,19 @@ export function runBatch(
     statistics.rounds += 1;
     statistics[outcome.winner] += 1;
     statistics.totalLength += outcome.time;
+    const lengthBucket =
+      outcome.time < 30
+        ? '0-30'
+        : outcome.time < 60
+          ? '30-60'
+          : outcome.time < 90
+            ? '60-90'
+            : '90+';
+    statistics.roundLengthBuckets[lengthBucket] += 1;
+    if (state.plantedSite) {
+      statistics.postPlantRounds += 1;
+      if (outcome.winner === 'CT') statistics.retakes += 1;
+    }
     const reason = `${outcome.winner} · ${outcome.reason}`;
     statistics.reasons[reason] = (statistics.reasons[reason] ?? 0) + 1;
     const site = statistics.site[state.site];
@@ -553,6 +569,10 @@ export function mergeStatistics(
   target.firstKillsByT += source.firstKillsByT;
   target.firstKillTime += source.firstKillTime;
   target.firstKills += source.firstKills;
+  target.postPlantRounds += source.postPlantRounds;
+  target.retakes += source.retakes;
+  for (const bucket of ['0-30', '30-60', '60-90', '90+'] as const)
+    target.roundLengthBuckets[bucket] += source.roundLengthBuckets[bucket];
   for (const [reason, count] of Object.entries(source.reasons))
     target.reasons[reason] = (target.reasons[reason] ?? 0) + count;
   for (const site of ['A', 'B'] as const) {

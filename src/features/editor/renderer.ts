@@ -27,6 +27,7 @@ export interface DrawOptions {
   sightOrigin: number;
   rectangle?: [number, number, number, number];
   brushSize: number;
+  highlightedCells: readonly number[];
 }
 
 export function drawBase(
@@ -216,6 +217,16 @@ export function drawMap(context: CanvasRenderingContext2D, options: DrawOptions)
   }
   if (analysis.firstContactCell >= 0 && overlay === 'race' && !live)
     ring(context, analysis.firstContactCell, map.width, size, '#fff', true);
+  for (const cell of options.highlightedCells) {
+    context.strokeStyle = '#ffcc43';
+    context.lineWidth = Math.max(2, size * 0.18);
+    context.strokeRect(
+      (cell % map.width) * size + 1,
+      Math.floor(cell / map.width) * size + 1,
+      size - 2,
+      size - 2,
+    );
+  }
   drawLabels(context, map, size);
   context.strokeStyle = 'rgba(255,255,255,.05)';
   context.lineWidth = 1;

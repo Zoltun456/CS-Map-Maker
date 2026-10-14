@@ -144,3 +144,130 @@
   margin: 0;
   color: #c9d3d5;
 }
+.agent-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.agent-intro p {
+  color: var(--muted);
+}
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.agent-grid .card {
+  min-width: 0;
+}
+.agent-source {
+  width: 100%;
+  min-height: 420px;
+  margin: 12px 0;
+  resize: vertical;
+}
+.file-button {
+  position: relative;
+  overflow: hidden;
+}
+.file-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.agent-score {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+.agent-score.good {
+  border-color: #54a878;
+}
+.agent-score.needs-work {
+  border-color: #d4a84e;
+}
+.agent-score.poor,
+.agent-score.invalid {
+  border-color: #d26057;
+}
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 10px 0 16px;
+}
+.category-grid details {
+  display: flex;
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--panel2);
+  flex-direction: column;
+}
+.category-grid summary {
+  display: flex;
+  cursor: pointer;
+  flex-direction: column;
+}
+.category-grid span,
+.category-grid dd {
+  color: var(--muted);
+  font-size: 12px;
+}
+.category-grid dl {
+  margin: 8px 0 0;
+}
+.category-grid dl div {
+  margin-top: 6px;
+}
+.category-grid dt {
+  font-size: 12px;
+}
+.category-grid dd {
+  margin: 0;
+}
+.diagnostics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.diagnostic {
+  display: flex;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: 6px;
+  background: var(--panel2);
+  color: var(--fg);
+  text-align: left;
+  flex-direction: column;
+}
+.diagnostic.error {
+  border-left-color: #d26057;
+}
+.diagnostic.warning {
+  border-left-color: #d4a84e;
+}
+.diagnostic span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.agent-preview img {
+  width: 100%;
+  max-height: 680px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+@media (max-width: 900px) {
+  .agent-grid {
+    grid-template-columns: 1fr;
+  }
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

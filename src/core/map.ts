@@ -70,3 +70,36 @@ export function paintCells(
   }
   return next;
 }
+
+export function selectSeparatedCells(
+  cells: readonly number[],
+  width: number,
+  limit = 3,
+  minimumDistance = 1.5,
+): number[] {
+  const selected: number[] = [];
+  let best: number[] = [];
+  const search = (start: number): boolean => {
+    if (selected.length > best.length) best = [...selected];
+    if (selected.length === limit) return true;
+    for (let index = start; index < cells.length; index += 1) {
+      const cell = cells[index];
+      if (
+        !selected.every(
+          (other) =>
+            Math.hypot(
+              (cell % width) - (other % width),
+              Math.floor(cell / width) - Math.floor(other / width),
+            ) >= minimumDistance,
+        )
+      )
+        continue;
+      selected.push(cell);
+      if (search(index + 1)) return true;
+      selected.pop();
+    }
+    return false;
+  };
+  search(0);
+  return best;
+}
