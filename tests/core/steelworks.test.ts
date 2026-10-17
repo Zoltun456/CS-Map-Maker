@@ -12,7 +12,7 @@ const lead = (x: number, y: number) =>
   secondsForDistance(graph.fromT[cell(x, y)] - graph.fromCT[cell(x, y)]);
 
 describe('Steelworks one-site 3v3 layout', () => {
-  it('preserves outdoor yard, enclosed mid, shipping and a central single site', () => {
+  it('preserves distinct lanes and a central single site', () => {
     expect(parsed.file.profile).toBe('one-site-3v3');
     expect(parsed.file.width).toBe(56);
     expect(parsed.file.height).toBe(70);
@@ -25,7 +25,7 @@ describe('Steelworks one-site 3v3 layout', () => {
     expect(graph.ctSpawn.length).toBeGreaterThanOrEqual(3);
   });
 
-  it('gives each initial CT lane position a meaningful timing lead', () => {
+  it('gives all initial CT positions a timing lead', () => {
     for (const [name, x, y] of [
       ['yard', 14, 18],
       ['fabrication', 28, 21],
@@ -37,19 +37,29 @@ describe('Steelworks one-site 3v3 layout', () => {
     }
   });
 
-  it('retains a viable T approach and a defender advantage at the plant', () => {
+  it('preserves meaningful first contact and site arrival', () => {
     const metrics = analyzeMap(graph);
     expect(metrics.tA).toBeGreaterThanOrEqual(10);
     expect(metrics.tA).toBeLessThan(18);
     expect(metrics.tA - metrics.ctA).toBeGreaterThan(4);
     expect(metrics.firstContact).toBeGreaterThan(5);
     expect(metrics.firstContact).toBeLessThan(12);
-    expect(graph.tSpawn.some((t) => graph.ctSpawn.some((ct) => hasLineOfSight(graph, t, ct)))).toBe(false);
+    expect(
+      graph.tSpawn.some((t) => graph.ctSpawn.some((ct) => hasLineOfSight(graph, t, ct))),
+    ).toBe(false);
   });
 
-  it('keeps every playable area connected and all three lanes reachable', () => {
-    for (const index of graph.walkableCells) expect(Number.isFinite(graph.fromT[index])).toBe(true);
-    for (const [x, y] of [[14, 18], [28, 21], [41, 19], [28, 28], [19, 44], [39, 45]]) {
+  it('keeps all three routes and all walkable space connected', () => {
+    for (const index of graph.walkableCells)
+      expect(Number.isFinite(graph.fromT[index])).toBe(true);
+    for (const [x, y] of [
+      [14, 18],
+      [28, 21],
+      [41, 19],
+      [28, 28],
+      [19, 44],
+      [39, 45],
+    ]) {
       expect(Number.isFinite(graph.fromT[cell(x, y)])).toBe(true);
       expect(Number.isFinite(graph.fromCT[cell(x, y)])).toBe(true);
     }
