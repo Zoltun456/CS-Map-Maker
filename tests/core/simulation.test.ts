@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { advanceDefuse } from '../../src/core/simulation';
+import { advanceDefuse, runBatch } from '../../src/core/simulation';
+import { buildGraph } from '../../src/core/graph';
+import { sampleMap } from '../../src/content/maps';
 import type { AgentState, SimulationState } from '../../src/core/types';
 
 function ct(id: string, kit: boolean): AgentState {
@@ -50,5 +52,13 @@ describe('defusing', () => {
     expect(bomb).toMatchObject({ activeDefuserId: 'CT2', defuseProgress: 1 });
     advanceDefuse(bomb, [], 1);
     expect(bomb).toMatchObject({ activeDefuserId: null, defuseProgress: 0 });
+  });
+});
+
+describe('seeded simulation', () => {
+  it('is repeatable for an explicit seed', () => {
+    const graph = buildGraph(sampleMap());
+    const options = { plan: 'mixed' as const, site: 'random' as const, roundTime: 90, seed: 1234 };
+    expect(runBatch(graph, options, 20)).toEqual(runBatch(graph, options, 20));
   });
 });

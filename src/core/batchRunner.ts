@@ -21,7 +21,10 @@ export class MainThreadBatchRunner implements BatchRunner {
     while (completed < rounds) {
       if (signal?.aborted) throw new BatchCancelledError();
       const count = Math.min(25, rounds - completed);
-      statistics = mergeStatistics(statistics, runBatch(graph, options, count));
+      statistics = mergeStatistics(
+        statistics,
+        runBatch(graph, { ...options, seed: (options.seed ?? 0x3c6ef372) + completed }, count),
+      );
       completed += count;
       onProgress?.(completed, rounds);
       if (completed < rounds) await new Promise<void>((resolve) => setTimeout(resolve, 0));

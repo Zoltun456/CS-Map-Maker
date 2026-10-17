@@ -32,6 +32,8 @@ export interface MapProfile {
 export interface MapCoordinate {
   x: number;
   y: number;
+  levelId?: string;
+  z?: number;
 }
 
 export type DiagnosticSeverity = 'error' | 'warning' | 'info';
@@ -92,7 +94,7 @@ export interface MapEvaluation {
   schemaVersion: 1;
   map: { name: string; profile: MapProfileId; width: number; height: number };
   valid: boolean;
-  status: 'invalid' | 'poor' | 'needs-work' | 'good';
+  status: 'invalid' | 'poor' | 'needs-work' | 'good' | 'excellent';
   score: number | null;
   categories: CategoryScore[];
   diagnostics: Diagnostic[];

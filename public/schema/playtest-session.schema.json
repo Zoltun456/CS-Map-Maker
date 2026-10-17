@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoltun456.github.io/CS-Map-Maker/schema/playtest-session.schema.json",
+  "title": "CS Map Maker local playtest session",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "mapHash",
+    "rubricVersion",
+    "createdAt",
+    "participant",
+    "scenario",
+    "profile",
+    "ratings"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "mapHash": { "type": "string", "minLength": 1 },
+    "rubricVersion": { "const": "2.0.0" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "participant": { "type": "string" },
+    "scenario": { "type": "string" },
+    "profile": { "enum": ["two-site-3v3", "one-site-3v3"] },
+    "ratings": {
+      "type": "object",
+      "required": ["flow", "combat", "readability", "fun"],
+      "additionalProperties": false,
+      "properties": {
+        "flow": { "$ref": "#/$defs/rating" },
+        "combat": { "$ref": "#/$defs/rating" },
+        "readability": { "$ref": "#/$defs/rating" },
+        "fun": { "$ref": "#/$defs/rating" }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "$defs": { "rating": { "type": "integer", "minimum": 1, "maximum": 5 } }
+}

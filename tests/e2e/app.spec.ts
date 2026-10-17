@@ -48,9 +48,11 @@ test('keyboard editing and modal focus are accessible', async ({ page }) => {
 test('agent workflow evaluates, exports, and links diagnostics to the editor', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('tab', { name: 'Agent tools' }).click();
+  await page.getByRole('button', { name: 'Flat v1' }).click();
   await expect(page.getByLabel('Agent map JSON')).toContainText('"format": "cs-map-maker"');
   await page.getByLabel('Profile').selectOption('one-site-3v3');
   await page.reload();
+  await page.getByRole('button', { name: 'Flat v1' }).click();
   await expect(page.getByLabel('Profile')).toHaveValue('one-site-3v3');
   await page.getByLabel('Simulation rounds').selectOption('200');
   await page.getByRole('button', { name: 'Evaluate map' }).click();
@@ -66,4 +68,39 @@ test('agent workflow evaluates, exports, and links diagnostics to the editor', a
     'true',
   );
   await expect(page.locator('#map')).toBeVisible();
+});
+
+test('layered editing, deterministic search, and local playtests are usable', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByRole('tab', { name: '2.5D' }).click();
+  await expect(page.getByRole('heading', { name: '2.5D layout' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add upper level' }).click();
+  await expect(page.getByLabel('Active level')).toContainText('Level 2');
+  await page.getByRole('button', { name: 'floor' }).click();
+  const layeredCanvas = page.getByLabel(/Edit Level 2/);
+  const layeredBox = await layeredCanvas.boundingBox();
+  if (!layeredBox) throw new Error('Layered canvas not visible');
+  await page.mouse.click(layeredBox.x + 20, layeredBox.y + 20);
+  await expect(page.getByRole('button', { name: 'Undo' })).toBeEnabled();
+
+  await page.getByRole('tab', { name: 'Agent tools' }).click();
+  await expect(page.getByRole('button', { name: 'Layered v2' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await page.getByRole('button', { name: 'Evaluate map' }).click();
+  await expect(page.getByText(/Rubric 2\.0\.0/)).toBeVisible();
+
+  await page.getByRole('tab', { name: 'Search' }).click();
+  await page.getByLabel('Candidate budget').selectOption('25');
+  await page.getByRole('button', { name: 'Search maps' }).click();
+  await expect(page.getByText(/evaluated 25/)).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole('button', { name: 'Accept candidate' }).first()).toBeVisible();
+
+  await page.getByRole('tab', { name: 'Playtests' }).click();
+  await page.getByLabel('Notes').fill('Routes were easy to understand.');
+  await page.getByRole('button', { name: 'Save session' }).click();
+  await expect(page.getByRole('status')).toContainText('Playtest evidence saved locally');
+  await expect(page.getByText('Routes were easy to understand.')).toBeVisible();
 });

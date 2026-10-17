@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoltun456.github.io/CS-Map-Maker/schema/map-evaluation-v2.schema.json",
+  "title": "MapEvaluationV2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "rubricVersion",
+    "map",
+    "mapHash",
+    "seed",
+    "rounds",
+    "valid",
+    "status",
+    "score",
+    "categories",
+    "diagnostics",
+    "scenarios",
+    "evidence"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "rubricVersion": { "type": "string" },
+    "mapHash": { "type": "string", "pattern": "^[0-9a-f]{8}$" },
+    "seed": { "type": "integer" },
+    "rounds": { "type": "integer", "minimum": 0 },
+    "valid": { "type": "boolean" },
+    "status": { "enum": ["invalid", "poor", "needs-work", "good", "excellent"] },
+    "score": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+    "map": { "type": "object" },
+    "categories": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "score", "maximum", "floorMet", "metrics"],
+        "properties": {
+          "id": {
+            "enum": ["flow", "timings", "combat", "objectives", "simulation", "verticality"]
+          },
+          "score": { "type": "number", "minimum": 0 },
+          "maximum": { "type": "number", "exclusiveMinimum": 0 },
+          "floorMet": { "type": "boolean" }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "message", "suggestion", "coordinates", "affectedCount"],
+        "properties": {
+          "code": { "type": "string" },
+          "severity": { "enum": ["error", "warning", "info"] },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "levelId": { "type": "string" },
+                "x": { "type": "integer" },
+                "y": { "type": "integer" },
+                "z": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "scenarios": { "type": "array" },
+    "evidence": { "type": "object" }
+  }
+}

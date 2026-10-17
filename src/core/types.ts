@@ -77,6 +77,7 @@ export interface SimulationOptions {
   plan: Plan;
   site: SiteChoice;
   roundTime: number;
+  seed?: number;
 }
 
 export interface AgentStep {
@@ -144,6 +145,7 @@ export interface SimulationState {
   rotatedTo: 'A' | 'B' | null;
   firstKill: { time: number; side: Team } | null;
   plantedSite?: 'A' | 'B';
+  random: () => number;
 }
 
 export interface SiteStatistics {

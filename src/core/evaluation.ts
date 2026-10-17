@@ -1,6 +1,7 @@
 import { analyzeMap } from './analysis';
 import { buildGraph, hasLineOfSight } from './graph';
 import { selectSeparatedCells } from './map';
+import { resolveProfile } from './profiles';
 import type {
   CategoryScore,
   ConfidenceInterval,
@@ -18,7 +19,7 @@ const coordinates = (graph: MapGraph, cells: readonly number[]): MapCoordinate[]
 const bandScore = (value: number, range: [number, number], maximum: number) => {
   if (!Number.isFinite(value)) return 0;
   if (value >= range[0] && value <= range[1]) return maximum;
-  const width = Math.max(1, range[1] - range[0]);
+  const width = Math.max(Number.EPSILON, range[1] - range[0]);
   const distance = value < range[0] ? range[0] - value : value - range[1];
   return Math.max(0, maximum * (1 - distance / width));
 };
@@ -191,9 +192,13 @@ export async function evaluateMap(
     runner?: BatchRunner;
     rounds?: number;
     signal?: AbortSignal;
+    seed?: number;
     onProgress?: (done: number, total: number) => void;
   } = {},
 ): Promise<MapEvaluation> {
+  // Candidate target overrides remain available as design metadata, but the
+  // official evaluator always grades against the versioned built-in profile.
+  profile = resolveProfile(profile.id);
   const graph = buildGraph(map);
   const analysis = analyzeMap(graph);
   const diagnostics: Diagnostic[] = [];
@@ -496,7 +501,7 @@ export async function evaluateMap(
   if (!hardInvalid && options.runner && (options.rounds ?? 1000) > 0) {
     stats = await options.runner.run({
       graph,
-      options: { plan: 'mixed', site: 'random', roundTime: 90 },
+      options: { plan: 'mixed', site: 'random', roundTime: 90, seed: options.seed ?? 0x3c6ef372 },
       rounds: options.rounds ?? 1000,
       signal: options.signal,
       onProgress: options.onProgress,

@@ -4,6 +4,9 @@ import { useApp, type AppTab } from '../../app/state';
 const TABS: Array<[AppTab, string]> = [
   ['lab', 'Layout lab'],
   ['agent', 'Agent tools'],
+  ['layers', '2.5D'],
+  ['search', 'Search'],
+  ['playtest', 'Playtests'],
   ['guide', 'Build guide'],
   ['themes', 'Themes'],
   ['permafrost', 'Permafrost'],

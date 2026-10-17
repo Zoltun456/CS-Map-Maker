@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoltun456.github.io/CS-Map-Maker/schema/external-run-manifest.schema.json",
+  "title": "CS2 external validation run",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "mapHash",
+    "rubricVersion",
+    "startedAt",
+    "completedAt",
+    "status",
+    "steps"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "mapHash": { "type": "string" },
+    "rubricVersion": { "const": "2.0.0" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["complete", "partial", "failed"] },
+    "steps": { "type": "array" },
+    "telemetry": {}
+  }
+}

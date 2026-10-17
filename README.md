@@ -23,15 +23,19 @@ npm run verify
 
 ## Autonomous agent workflow
 
-Agents can author the readable `.csmap.json` format and use the same evaluator as the website without controlling a canvas:
+Agents can author readable v1 or layered v2 `.csmap.json` files and use the same versioned evaluator and deterministic search engine as the website without controlling a canvas:
 
 ```sh
-npm run map -- validate examples/maps/two-site.csmap.json --json
-npm run map -- evaluate examples/maps/two-site.csmap.json --out map-artifacts/sample
-npm run map -- compare examples/maps --out map-artifacts/comparison --json
+npm run --silent map -- validate examples/maps/two-site.csmap.json --json
+npm run --silent map -- evaluate examples/maps/two-site.csmap.json --seed 42 --out map-artifacts/sample
+npm run --silent map -- improve examples/maps/two-site.csmap.json --seed 42 --budget 250 --out map-artifacts/search --json
+npm run --silent map -- compare examples/maps --seed 42 --out map-artifacts/comparison --json
+npm run --silent agent:trial -- examples/maps/layered-two-site.v2.csmap.json --out map-artifacts/agent-trial
 ```
 
-The **Agent tools** tab imports and exports the format, runs the shared 0–100 rubric, highlights diagnostic coordinates, and downloads reports, SVG previews, layout codes, and Hammer output. See [the agent-authoring guide](docs/agent-authoring.md) and [JSON Schema](public/schema/csmap.schema.json).
+The **Agent tools** tab runs the shared rubric, **Search** explores a reproducible Pareto frontier, **2.5D** edits overlapping floors, and **Playtests** stores local human evidence. See [the agent-authoring guide](docs/agent-authoring.md), [v1 schema](public/schema/csmap.schema.json), and [v2 schema](public/schema/csmap-v2.schema.json).
+
+The layered trial uses four fixed seeds, verifies deterministic replay, checks every category floor, and writes a versioned manifest with exact-map and SVG evidence.
 
 `npm run build` produces a conventional static site in `dist/`. The Vite base path is configured for the GitHub Pages project URL at `https://zoltun456.github.io/CS-Map-Maker/`.
 
@@ -60,7 +64,7 @@ The app reads and writes the original `CS3V3:` version 1 layout format and retai
 
 The simulator is a comparison tool, not a match predictor. Agents use simplified path choice, visibility, cover, reaction, rotation, planting, and defusing rules. Real movement, utility, sound decisions, boosts, economy, and player strategy are outside its model. Always validate a layout through bot and human playtests.
 
-Simulation randomness deliberately remains non-deterministic. A future improvement should move batches behind Web Workers so hundreds or thousands of rounds can run in parallel, reducing variance while keeping the interface responsive. The `BatchRunner` interface is the seam for that work.
+Simulation and candidate search are seeded and reproducible. The `BatchRunner` interface remains the seam for moving larger batches to dedicated workers.
 
 Agent scores combine hard playability gates with flow, timing, combat, and simplified simulation evidence. A high score helps select blockouts; it does not establish that a map is fun.
 

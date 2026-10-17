@@ -1,0 +1,138 @@
+{
+  "format": "cs-map-maker",
+  "version": 2,
+  "name": "Layered two-site starter",
+  "notes": "Agent-ready two-level fixture with a connected overlook.",
+  "profile": "two-site-3v3",
+  "width": 24,
+  "height": 18,
+  "cellSize": 64,
+  "levels": [
+    {
+      "id": "ground",
+      "name": "Ground",
+      "elevation": 0,
+      "ceilingHeight": 192,
+      "rows": [
+        "########################",
+        "#......................#",
+        "#......................#",
+        "#......X...............#",
+        "#......................#",
+        "#..............X.......#",
+        "#......................#",
+        "#......................#",
+        "#....X............X....#",
+        "#......................#",
+        "#......................#",
+        "#..............X.......#",
+        "#......................#",
+        "#......X...............#",
+        "#......................#",
+        "#......................#",
+        "#......................#",
+        "########################"
+      ]
+    },
+    {
+      "id": "overlook",
+      "name": "Mid overlook",
+      "elevation": 128,
+      "ceilingHeight": 192,
+      "rows": [
+        "________________________",
+        "________________________",
+        "________________________",
+        "________________________",
+        "_________######_________",
+        "_________......_________",
+        "_________......_________",
+        "_________......_________",
+        "_________......_________",
+        "_________......_________",
+        "_________######_________",
+        "________________________",
+        "________________________",
+        "________________________",
+        "________________________",
+        "________________________",
+        "________________________",
+        "________________________"
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "id": "t-main",
+      "kind": "t-spawn",
+      "cells": [
+        { "levelId": "ground", "x": 2, "y": 14 },
+        { "levelId": "ground", "x": 3, "y": 14 },
+        { "levelId": "ground", "x": 4, "y": 14 }
+      ]
+    },
+    {
+      "id": "ct-main",
+      "kind": "ct-spawn",
+      "cells": [
+        { "levelId": "ground", "x": 19, "y": 2 },
+        { "levelId": "ground", "x": 20, "y": 2 },
+        { "levelId": "ground", "x": 21, "y": 2 }
+      ]
+    },
+    {
+      "id": "site-a",
+      "kind": "site-a",
+      "cells": [
+        { "levelId": "ground", "x": 3, "y": 3 },
+        { "levelId": "ground", "x": 4, "y": 3 },
+        { "levelId": "ground", "x": 5, "y": 3 },
+        { "levelId": "ground", "x": 3, "y": 4 },
+        { "levelId": "ground", "x": 4, "y": 4 },
+        { "levelId": "ground", "x": 5, "y": 4 }
+      ]
+    },
+    {
+      "id": "site-b",
+      "kind": "site-b",
+      "cells": [
+        { "levelId": "ground", "x": 18, "y": 12 },
+        { "levelId": "ground", "x": 19, "y": 12 },
+        { "levelId": "ground", "x": 20, "y": 12 },
+        { "levelId": "ground", "x": 18, "y": 13 },
+        { "levelId": "ground", "x": 19, "y": 13 },
+        { "levelId": "ground", "x": 20, "y": 13 }
+      ]
+    },
+    {
+      "id": "overlook-callout",
+      "kind": "callout",
+      "name": "Overlook",
+      "cells": [{ "levelId": "overlook", "x": 12, "y": 7 }]
+    }
+  ],
+  "features": [
+    {
+      "id": "overlook-railing",
+      "kind": "railing",
+      "from": { "levelId": "overlook", "x": 10, "y": 5 },
+      "to": { "levelId": "overlook", "x": 11, "y": 5 }
+    }
+  ],
+  "links": [
+    {
+      "id": "stairs-west",
+      "kind": "stairs",
+      "from": { "levelId": "ground", "x": 9, "y": 7 },
+      "to": { "levelId": "overlook", "x": 9, "y": 7 },
+      "bidirectional": true
+    },
+    {
+      "id": "stairs-east",
+      "kind": "stairs",
+      "from": { "levelId": "ground", "x": 14, "y": 8 },
+      "to": { "levelId": "overlook", "x": 14, "y": 8 },
+      "bidirectional": true
+    }
+  ]
+}

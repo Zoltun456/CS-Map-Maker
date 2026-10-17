@@ -1,5 +1,6 @@
 import { RUN_SPEED_CELLS_PER_SECOND } from './map';
 import { distanceField, distanceTo, hasLineOfSight } from './graph';
+import { createSeededRandom, normalizeSeed, type RandomSource } from './random';
 import {
   TileType,
   type AgentState,
@@ -18,9 +19,10 @@ export const ROUND_RULES = {
   weaponRange: 48,
 } as const;
 
-const pick = <T>(values: readonly T[]): T => values[Math.floor(Math.random() * values.length)];
-const randomBetween = (minimum: number, maximum: number) =>
-  minimum + Math.random() * (maximum - minimum);
+const pick = <T>(values: readonly T[], random: RandomSource): T =>
+  values[Math.floor(random() * values.length)];
+const randomBetween = (minimum: number, maximum: number, random: RandomSource) =>
+  minimum + random() * (maximum - minimum);
 const coordinates = (graph: MapGraph, cell: number): [number, number] => [
   (cell % graph.width) + 0.5,
   Math.floor(cell / graph.width) + 0.5,
@@ -33,6 +35,7 @@ function nearSite(
   siteCells: readonly number[],
   maxDistance: number,
   favorCover: boolean,
+  random: RandomSource,
 ): number {
   const distances =
     siteCells === graph.siteA
@@ -63,15 +66,21 @@ function nearSite(
       }
       for (let index = 0; index < weight; index += 1) candidates.push(cell);
     }
-  return candidates.length ? pick(candidates) : pick(siteCells);
+  return candidates.length ? pick(candidates, random) : pick(siteCells, random);
 }
 
-function viaCell(graph: MapGraph, from: number, to: number, lenience: number): number | null {
+function viaCell(
+  graph: MapGraph,
+  from: number,
+  to: number,
+  lenience: number,
+  random: RandomSource,
+): number | null {
   const fromField = distanceTo(graph, from);
   const toField = distanceTo(graph, to);
   const direct = fromField[to];
   for (let index = 0; index < 80; index += 1) {
-    const candidate = pick(graph.walkableCells);
+    const candidate = pick(graph.walkableCells, random);
     const distance = fromField[candidate] + toField[candidate];
     if (
       distance <= direct * lenience &&
@@ -89,6 +98,7 @@ function createAgent(
   index: number,
   start: number,
   steps: AgentState['steps'],
+  random: RandomSource,
 ): AgentState {
   const [x, y] = coordinates(graph, start);
   return {
@@ -105,28 +115,24 @@ function createAgent(
     still: 0,
     target: null,
     aimTime: 0,
-    skill: randomBetween(0.85, 1.15),
+    skill: randomBetween(0.85, 1.15, random),
     kills: 0,
     visible: [],
   };
 }
 
 export function createRound(graph: MapGraph, options: SimulationOptions): SimulationState {
+  const random = createSeededRandom(normalizeSeed(options.seed));
   const hasB = graph.siteB.length > 0;
   const site =
-    options.site === 'A' || !hasB
-      ? 'A'
-      : options.site === 'B'
-        ? 'B'
-        : Math.random() < 0.5
-          ? 'A'
-          : 'B';
+    options.site === 'A' || !hasB ? 'A' : options.site === 'B' ? 'B' : random() < 0.5 ? 'A' : 'B';
   const plan =
     options.plan === 'mixed'
       ? pick(
           hasB
             ? (['rush', 'default', 'default', 'fake'] as const)
             : (['rush', 'default', 'default'] as const),
+          random,
         )
       : options.plan === 'fake' && !hasB
         ? 'default'
@@ -153,34 +159,40 @@ export function createRound(graph: MapGraph, options: SimulationOptions): Simula
     alerts: { A: new Set(), B: new Set() },
     rotatedTo: null,
     firstKill: null,
+    random,
   };
-  const executeAt = plan === 'rush' ? 0 : randomBetween(12, Math.min(32, state.roundTime - 35));
-  const tSpawns = [...graph.tSpawn].sort(() => Math.random() - 0.5);
-  const ctSpawns = [...graph.ctSpawn].sort(() => Math.random() - 0.5);
+  const executeAt =
+    plan === 'rush' ? 0 : randomBetween(12, Math.min(32, state.roundTime - 35), random);
+  const tSpawns = [...graph.tSpawn].sort(() => random() - 0.5);
+  const ctSpawns = [...graph.ctSpawn].sort(() => random() - 0.5);
   for (let index = 0; index < 3; index += 1) {
     const start = tSpawns[index % tSpawns.length];
-    const spot = index === 0 ? pick(targetSite) : nearSite(graph, targetSite, 2, false);
+    const spot =
+      index === 0 ? pick(targetSite, random) : nearSite(graph, targetSite, 2, false, random);
     const steps: AgentState['steps'] = [];
     if (plan === 'fake' && index < 2)
-      steps.push({ cell: nearSite(graph, otherSite, 5, false), until: executeAt });
-    else if (plan !== 'rush' || Math.random() < 0.35) {
-      const intermediate = viaCell(graph, start, spot, plan === 'rush' ? 1.2 : 1.5);
+      steps.push({ cell: nearSite(graph, otherSite, 5, false, random), until: executeAt });
+    else if (plan !== 'rush' || random() < 0.35) {
+      const intermediate = viaCell(graph, start, spot, plan === 'rush' ? 1.2 : 1.5, random);
       if (intermediate !== null)
         steps.push({ cell: intermediate, until: plan === 'rush' ? 0 : executeAt });
     }
     steps.push({ cell: spot, final: true });
-    state.agents.push(createAgent(graph, 'T', index, start, steps));
+    state.agents.push(createAgent(graph, 'T', index, start, steps, random));
   }
   state.agents[0].carrier = true;
   const roles: Array<'A' | 'B' | 'mid'> = hasB
     ? [
-        ...pick([
-          ['A', 'A', 'B'],
-          ['A', 'B', 'B'],
-          ['A', 'B', 'B'],
-          ['A', 'A', 'B'],
-          ['A', 'B', 'mid'],
-        ] as const),
+        ...pick(
+          [
+            ['A', 'A', 'B'],
+            ['A', 'B', 'B'],
+            ['A', 'B', 'B'],
+            ['A', 'A', 'B'],
+            ['A', 'B', 'mid'],
+          ] as const,
+          random,
+        ),
       ]
     : ['A', 'A', 'mid'];
   for (let index = 0; index < 3; index += 1) {
@@ -195,12 +207,14 @@ export function createRound(graph: MapGraph, options: SimulationOptions): Simula
             ? Math.abs(graph.fromA[cell] - graph.fromB[cell]) < 6
             : graph.fromA[cell] > 6 && graph.fromA[cell] < 14),
       );
-      spot = candidates.length ? pick(candidates) : nearSite(graph, graph.siteA, 3, true);
+      spot = candidates.length
+        ? pick(candidates, random)
+        : nearSite(graph, graph.siteA, 3, true, random);
       role = 'A';
-    } else spot = nearSite(graph, role === 'A' ? graph.siteA : graph.siteB, 3, true);
-    const agent = createAgent(graph, 'CT', index, start, [{ cell: spot, final: true }]);
+    } else spot = nearSite(graph, role === 'A' ? graph.siteA : graph.siteB, 3, true, random);
+    const agent = createAgent(graph, 'CT', index, start, [{ cell: spot, final: true }], random);
     agent.home = role;
-    agent.kit = Math.random() < 0.6;
+    agent.kit = random() < 0.6;
     state.agents.push(agent);
   }
   return state;
@@ -314,8 +328,8 @@ function rotate(state: SimulationState, site: 'A' | 'B') {
   for (const agent of state.agents)
     if (agent.side === 'CT' && agent.alive && agent.home !== site)
       agent.override = {
-        cell: nearSite(state.graph, cells, 3, true),
-        at: state.time + randomBetween(1, 2.5),
+        cell: nearSite(state.graph, cells, 3, true, state.random),
+        at: state.time + randomBetween(1, 2.5, state.random),
       };
   state.events.push({ time: state.time, rotate: site });
 }
@@ -356,13 +370,13 @@ export function stepRound(state: SimulationState, delta: number): void {
     const [enemy, distance] = agent.visible[0];
     if (agent.target !== enemy) {
       agent.target = enemy;
-      agent.aimTime = randomBetween(0.22, 0.45) * (agent.still > 0.8 ? 0.7 : 1);
+      agent.aimTime = randomBetween(0.22, 0.45, state.random) * (agent.still > 0.8 ? 0.7 : 1);
       continue;
     }
     agent.aimTime -= delta;
     if (
       agent.aimTime <= 0 &&
-      Math.random() <
+      state.random() <
         1 -
           Math.exp(-killRate(distance) * agent.skill * coverMultiplier(graph, enemy, agent) * delta)
     )
@@ -405,8 +419,8 @@ export function stepRound(state: SimulationState, delta: number): void {
       if (state.bomb.state === 'planted' && !agent.postplant) {
         agent.postplant = true;
         agent.override = {
-          cell: nearSite(graph, [state.bomb.cell], 6, true),
-          at: state.time + randomBetween(0, 1),
+          cell: nearSite(graph, [state.bomb.cell], 6, true, state.random),
+          at: state.time + randomBetween(0, 1, state.random),
         };
       }
       if (
@@ -443,7 +457,7 @@ export function stepRound(state: SimulationState, delta: number): void {
         agent.carrier = true;
         state.bomb.state = 'carried';
         agent.override = null;
-        agent.steps = [{ cell: pick(targetSite), final: true }];
+        agent.steps = [{ cell: pick(targetSite, state.random), final: true }];
         agent.stepIndex = 0;
         continue;
       }
@@ -464,7 +478,10 @@ export function stepRound(state: SimulationState, delta: number): void {
           state.events.push({ time: state.time, plant: state.plantedSite });
           for (const ct of state.agents)
             if (ct.side === 'CT' && ct.alive)
-              ct.override = { cell: state.bomb.cell, at: state.time + randomBetween(0.5, 1.5) };
+              ct.override = {
+                cell: state.bomb.cell,
+                at: state.time + randomBetween(0.5, 1.5, state.random),
+              };
         }
         continue;
       }
@@ -514,7 +531,7 @@ export function runBatch(
     roundLengthBuckets: { '0-30': 0, '30-60': 0, '60-90': 0, '90+': 0 },
   };
   for (let round = 0; round < rounds; round += 1) {
-    const state = createRound(graph, options);
+    const state = createRound(graph, { ...options, seed: normalizeSeed(options.seed) + round });
     let guard = 0;
     while (!state.outcome && guard++ < 3000) stepRound(state, 0.1);
     if (!state.outcome) finish(state, 'CT', 'Time ran out');
